@@ -51,11 +51,15 @@ def todo():
             params3 = params['title']
             params4 = params['Description']
             params5 = params['done']
-            sql = "INSERT INTO todolist (deadline, title, Description, done) VALUES (%s, %s, %s, %s)"
-            val = [(params2, params3, params4, params5)]
-            mycursor.executemany(sql, val)
-            mydb.commit()
-            return "Created", 201
+            if params2 != "" and params3 != "" and params4 !="" and params5 !="":
+                sql = "INSERT INTO todolist (deadline, title, Description, done) VALUES (%s, %s, %s, %s)"
+                val = [(params2, params3, params4, params5)]
+                mycursor.executemany(sql, val)
+                mydb.commit()
+                print (params2, params3, params4, params5)
+                return "Created", 201
+            else:
+                return "Données incomplètes", 400
         else:
             return "Bad request", 400
 
@@ -85,16 +89,22 @@ def todo_id(id):
             return "No Content", 204
 
     elif request.method == 'PUT':
-        params = request.get_json()
-        params2 = params['deadline']
-        params3 = params['title']
-        params4 = params['Description']
-        params5 = params['done']
-        val = (params2, params3, params4, params5, id)
-        sql = "UPDATE todolist SET deadline='%s', title='%s', Description='%s', done='%s' WHERE id ='%s'" % val
-        mycursor.execute(sql)
-        mydb.commit()
-        return "OK", 200
+        if request.get_json(silent=True) is not None:
+            params = request.get_json()
+            params2 = params['deadline']
+            params3 = params['title']
+            params4 = params['Description']                
+            params5 = params['done']
+            if params2 != "" and params3 != "" and params4 !="" and params5 !="":
+                val = (params2, params3, params4, params5, id)
+                sql = "UPDATE todolist SET deadline='%s', title='%s', Description='%s', done='%s' WHERE id ='%s'" % val
+                mycursor.execute(sql)
+                mydb.commit()
+                return "OK", 200
+            else:
+                return "Données incomplètes", 400
+        else:
+            return "Bad request", 400
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000)
