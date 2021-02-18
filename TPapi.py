@@ -11,12 +11,10 @@ mydb = mysql.connector.connect(
   database="tp4_python"
 )
 mycursor = mydb.cursor()
-
 app = Flask(__name__)
 
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
-
 
 @app.route('/')
 @cross_origin()
